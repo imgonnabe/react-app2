@@ -25,7 +25,7 @@ function PostListItem(props){
 
     return (
         <Wrapper onClick={onClick}>
-            <TitleText>{post.title}</TitleText>
+            <TitleText>{post.btitle}</TitleText>
         </Wrapper>
     )
 }

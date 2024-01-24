@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import TextInput from "../ui/TextInput";
 import Button from "../ui/Button";
 
@@ -23,23 +23,22 @@ const Container = styled.div`
     }
 `
 
-function PostWritePage(props){
+function LoginPage(props){
     const navigate = useNavigate()
+    const [id, setId] = useState('')
+    const [pw, setPw] = useState('')
 
-    const [title, setTitle] = useState('')
-    const [content, setContent] = useState('')
-
-    const handleWrite = () => {
+    const handleLogin = (event) => {
         // API 엔드포인트 및 요청 설정
-        const apiUrl = "/api/postWrite";
+        const apiUrl = "/api/login";
         const requestOptions = {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },// postman에서 body의 raw 선택하고 데이터 형식을 json으로 설정
           body: JSON.stringify({
-            title: title,
-            content: content,
+            id: id,
+            pw: pw,
           }),
         };
         
@@ -47,10 +46,11 @@ function PostWritePage(props){
         fetch(apiUrl, requestOptions)
           .then((response) => response.json())
           .then((data) => {
-            if(data.result == 1){
-                
+            if(data.count == 1){
+                props.setIsLoggedIn(true)
+                navigate("/"); // 로그인 후 리다이렉션 등의 처리
             } else {
-                navigate("/post-write")
+                navigate("/login")
             }
           })
           .catch((error) => {
@@ -61,35 +61,33 @@ function PostWritePage(props){
     return(
         <Wrapper>
             <Container>
+                아이디: 
                 <TextInput
                     height={20}
-                    value={title}
+                    value={id}
                     onChange={(event) => {
-                        setTitle(event.target.value)
+                        setId(event.target.value)
                     }}
                 />
+                비밀번호: 
                 <TextInput
-                    height={480}
-                    value={content}
+                    height={20}
+                    value={pw}
                     onChange={(event) => {
-                        setContent(event.target.value)
+                        setPw(event.target.value)
                     }}
                 />
                 <Button
-                    title="글 작성하기"
-                    disabled={!title || !content}
+                    title="로그인"
                     onClick={() => {
-                        if(!title || !content){
-                            alert("모두 입력하세요.")
-                        } else {
-                            handleWrite()
-                            navigate('/')
-                        }
+                        handleLogin()
+                        navigate('/')
                     }}
                 />
             </Container>
         </Wrapper>
     )
+
 }
 
-export default PostWritePage
+export default LoginPage;
